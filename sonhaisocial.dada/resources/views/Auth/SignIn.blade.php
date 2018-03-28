@@ -21,7 +21,7 @@
                     @endif
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-default">Sign up</button>
+                    <button type="submit" class="btn btn-default">Sign in</button>
                 </div>
             </form>
         </div>

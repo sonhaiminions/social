@@ -12,14 +12,10 @@ class Status extends Model
     public function user(){
         return $this->belongsTo('App\User','user_id','id');
     }
+    public function likes()
+    {
+        return $this->morphMany('App\Likes', 'likeable');
+    }
 
-    public function diff(){
-        $current =Carbon::parse('2018-03-26 13:49:45')->diffForHumans();
-//        $current;
-//        dd($current);
-        return  $this->$current;
-    }
-    public function likes(){
-        return $this->morphMany('App\Likes','status_id');
-    }
+
 }

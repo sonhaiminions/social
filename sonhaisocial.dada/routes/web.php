@@ -37,6 +37,7 @@ Route::get('timeline','StatusController@index')->name('timeline');
 Route::post('poststatus','StatusController@poststatus');
 Route::post('replypost/{id}','StatusController@replypost');
 Route::get('like/{id}','StatusController@like');
+Route::get('unlike/{id}','StatusController@unlike');
 // friend
 Route::get('friend/{id}','FriendsController@getfriend')->name('friend');
 Route::get('getadd/{id}','FriendsController@getadd');

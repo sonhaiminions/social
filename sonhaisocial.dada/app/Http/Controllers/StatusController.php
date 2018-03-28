@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Carbon\Carbon;
+use const Grpc\STATUS_ABORTED;
 use Illuminate\Http\Request;
 use App\Status;
 use App\User;
@@ -21,15 +22,22 @@ class StatusController extends Controller
             }
         }
         return $a;
-
     }
     public function index(){
 //        $current =new Carbon('2018-03-26 13:49:45');
 //        $current =Carbon::parse('2018-03-26 13:49:45')->diffForHumans();
 //        $current;
 //        dd($current);
+
        $a = $this->getlist(Auth::user()->id);
 
+        $status = Status::whereIn('user_id', $a)
+            ->orderBy('created_at','desc')
+            ->where('parent_id',0)
+            ->with('user:id,email')
+            ->get();
+        dd($status->user->id);
+            dd($status);
         $status = DB::table('status')->join('users', 'status.user_id', '=', 'users.id')
             ->select('status.*','users.username', 'users.avatar', 'users.location')
             ->whereIn('user_id', $a)->orderBy('created_at','desc')->where('status.parent_id',0)
@@ -40,6 +48,8 @@ class StatusController extends Controller
                 ->select('status.*','users.username', 'users.avatar', 'users.location')
                 ->whereIn('user_id', $a)->orderBy('created_at','asc')->where('status.parent_id',$status[$i]->id)->get();
         }
+//        $status = Status::find(1);
+//        dd($status->likes()->get());
         return view('Timeline/index',['status'=>$status,'rep'=>$rep]);
     }
     public function poststatus(Request $request){
@@ -54,7 +64,7 @@ class StatusController extends Controller
             ]);
         $status = new Status();
         $status->user_id = Auth::user()->id;
-//        $status->parent_id = Auth::user()->id;
+
         $status->body = $request->status2;
         $status->save();
         return redirect()->route('timeline');
@@ -73,13 +83,24 @@ class StatusController extends Controller
         $status->parent_id = $id;
         $status->body = $request->input('reply-'.$id);
         $status->save();
-return redirect()->route('timeline');
+        return redirect()->route('timeline');
     }
     public function like($id){
         $like = new Likes();
         $like->user_id = Auth::user()->id;
-        $like->status_id = $id;
+        $like->likeable_id = $id;
+        $like->likeable_type = 'App\status';
         $like->save();
+        $status = Status::find($id);
+        $status->likecount = $status->likecount + 1;
+        $status->save();
+        return redirect()->back();
+    }
+    public function unlike($id){
+        $status = Status::find($id);
+        $status->likecount = $status->likecount - 1;
+        $status->save();
+        Likes::where('user_id',Auth::user()->id)->where('likeable_id',$id)->delete();
         return redirect()->back();
     }
 }

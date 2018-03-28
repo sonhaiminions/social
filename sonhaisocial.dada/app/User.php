@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\Status;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\Builder;
@@ -70,6 +70,12 @@ class User extends Authenticatable {
     public function statuses(){
        return $this->hasMany('App\Status','user_id','id');
     }
+
+    public function hasliked($id){
+        $status = Status::find($id);
+        return $status->likes()->where('user_id',$this->id)->where('likeable_id',$id)->count();
+    }
+
 
 
 

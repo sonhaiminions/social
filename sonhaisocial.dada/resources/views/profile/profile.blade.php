@@ -31,8 +31,19 @@
 							<p>{{$key->body}}</p>
 							<ul class="list-inline">
 								<li></li>
-								<li><a href="#">Like</a></li>
-								<li>10 likes</li>
+								<li>
+
+									@if(Auth::user()->hasliked($key->id)==0)
+										<a href="like/{{$key->id}}">Like</a>
+									@else
+										<a href="unlike/{{$key->id}}">Unlike</a>
+									@endif
+								</li>
+								<li>
+									@if($key->likecount!=0)
+										{{$key->likecount}} likes
+									@endif
+								</li>
 							</ul>
 							@if($rep[$key->id])
 								@foreach($rep[$key->id] as $reply)
@@ -48,8 +59,19 @@
 											<p>{{$reply->body}}</p>
 											<ul class="list-inline">
 												<li>2 days ago</li>
-												<li><a href="#">Like</a></li>
-												<li>10 likes</li>
+												<li>
+
+													@if(Auth::user()->hasliked($reply->id)==0)
+														<a href="like/{{$reply->id}}">Like</a>
+													@else
+														<a href="unlike/{{$reply->id}}">Unlike</a>
+													@endif
+												</li>
+												<li>
+													@if($reply->likecount!=0)
+														{{$reply->likecount}} likes
+													@endif
+												</li>
 											</ul>
 										</div>
 									</div>

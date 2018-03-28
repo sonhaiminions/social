@@ -10,7 +10,7 @@
     <script src="{{asset('admin/js/bootstrap.min.js')}}"></script>
     <script>
         $(document).ready(function(){
-            $("#flip").click(function(){
+            $("#flip").hover(function(){
                 $("#flip").slideUp("slow");
             });
         });

@@ -18,6 +18,7 @@ class CreateStatusTable extends Migration
             $table->integer('user_id');
             $table->integer('parent_id')->default(0);
             $table->text('body');
+            $table->integer('likecount')->default(0);
             $table->timestamps();
         });
     }
